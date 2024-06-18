@@ -1,0 +1,22 @@
+body {
+    background-color: #f1f1f1;
+}
+
+.loading {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+    border-top-color: orange;
+    border-radius: 100%;
+    animation: load .8s infinite linear;
+}
+
+@keyframes load {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform:  rotate(360deg);
+    }
+}
