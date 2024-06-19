@@ -17,7 +17,10 @@ const RecipeSchema = new mongoose.Schema({
         type:Array,
         required:true
     },
-    user_id: mongoose.Schema.Types.ObjectId
+    user:{
+        type:  mongoose.Schema.Types.ObjectId,
+        ref : 'User'
+    },
 },{ timestamps:true });
 
 module.exports = mongoose.model('Recipe',RecipeSchema);

@@ -86,6 +86,7 @@ function RecipeCard({r, onDelete}) {
                     <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />
                 </div>
             </div>
+            <p className="text-end"><span className="font-bold">Creator By</span> <span>{r.user.name}</span></p>
             <ToastContainer/>
         </div>
     )

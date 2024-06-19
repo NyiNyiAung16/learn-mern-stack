@@ -34,6 +34,7 @@ const FavoriteRecipes = () => {
                 { favRecipes?.length > 0 && favRecipes.map((recipe) => (
                     <RecipeCard r={recipe} key={recipe._id}/>
                 ))}
+                {favRecipes?.length <= 0 && <p>You do not have any favorite recipes!</p>}
             </div>
         </>
     )

@@ -8,10 +8,17 @@ const recipesController = {
     index: async(req,res) => {
         let limit = 6;
         let page = parseInt(req.query.page) || 1;
+        let search = req.query.search || '';
          
         try{
             let recipes = await Recipe
-            .find()
+            .find({
+                $or: [
+                    {title: {$regex: search, $options: 'i'}},
+                    {"user.name":{$regex: search, $options: 'i'}}
+                ]
+            })
+            .populate('user')
             .skip((page - 1) * limit) // 3 - 1 , 2 * 5
             .limit(limit)
             .sort({createdAt: -1});
@@ -58,8 +65,7 @@ const recipesController = {
     },
     store: async (req,res) => {
         try{
-            const {title,description,ingredients,photo_url} = req.body;
-            const recipe = await Recipe.create({title,description,ingredients,photo_url});
+            const recipe = await Recipe.create({...req.body});
             if(!recipe) {
                 throw new Error("Can't Create Recipe!!");
             }

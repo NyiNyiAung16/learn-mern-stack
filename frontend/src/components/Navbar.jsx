@@ -2,8 +2,9 @@ import axios from "../helpers/axios";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/authContext";
 import { useContext, useState } from "react";
+import Filter from "./Filter";
 
-function Navbar() {
+function Navbar({setFiler}) {
   let navigate = useNavigate();
   let [showProfile, setShowProfile] = useState(false);
   let { user, dispatch } = useContext(AuthContext);
@@ -19,6 +20,9 @@ function Navbar() {
     <div className="flex justify-between items-center p-5 bg-white">
       <h3 className="text-orange-500 font-bold text-2xl">Reciption</h3>
       <ul className="flex items-center gap-7">
+        <li>
+          <Filter setFiler={setFiler}/>
+        </li>
         <li>
           <NavLink to="/" className="hover:text-orange-500 font-medium">
             Home

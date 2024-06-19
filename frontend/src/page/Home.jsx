@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import Pagination from "../components/Pagination";
 import RecipeCard from "../components/RecipeCard";
@@ -8,14 +8,15 @@ function Home() {
   let navigate = useNavigate();
   let searchQuery = new URLSearchParams(location.search);
   let page = parseInt(searchQuery.get("page")) || 1;
-
+  const filter = useOutletContext();
+  
   let {
     data: recipes,
     error,
     loading,
     links,
     setData: setRecipes,
-  } = useFetch(`/api/recipes?page=${page}`);
+  } = useFetch(`/api/recipes?page=${page}&search=${filter}`);
 
   let onDelete = (_id) => {
     if (recipes.length === 1 && page > 1) {
