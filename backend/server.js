@@ -17,8 +17,6 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app = express();
-const mongooseURL =
-  "mongodb+srv://nyinyi31088:MernStack123@mernstack-cluster.pwxpl9b.mongodb.net/?retryWrites=true&w=majority&appName=MernStack-Cluster";
 
 app.set("views", "./views");
 app.set("view engine", "ejs");
@@ -33,12 +31,11 @@ app.use(
 );
 app.use(cookieParser());
 
-mongoose.connect(mongooseURL).then(() => {
+mongoose.connect(process.env.MONGODB_URL).then(() => {
   console.log("connected to db");
   app.listen(process.env.PORT, () => {
     console.log("server is running on port=" + process.env.PORT);
   });
-
   // cron.schedule('*/5 * * * * *', () => {
   //     console.log('running a task every 5 seconds');
   // });
