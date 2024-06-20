@@ -14,11 +14,13 @@ import ProfilePicture from '../components/ProfilePicture';
 import EmailAndName from '../components/EmailAndName';
 import UpdatePassword from '../components/UpdatePassword';
 import FavoriteRecipes from '../page/FavoriteRecipes';
+import ErrorPage from '../error/errorPage';
 
 let router = createBrowserRouter([
   {
     path: '/',
     element: <App/>,
+    errorElement: <ErrorPage/>,
     children:[
       {
         path:'',
