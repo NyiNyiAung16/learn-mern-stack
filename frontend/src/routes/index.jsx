@@ -15,6 +15,10 @@ import EmailAndName from '../components/EmailAndName';
 import UpdatePassword from '../components/UpdatePassword';
 import FavoriteRecipes from '../page/FavoriteRecipes';
 import ErrorPage from '../error/errorPage';
+import MustBeAdmin from '../components/MustBeAdmin';
+import Dashboard from '../page/admin/Dashboard';
+import Recipes from '../page/admin/Recipes';
+import Admin from '../page/Admin';
 
 let router = createBrowserRouter([
   {
@@ -87,7 +91,25 @@ let router = createBrowserRouter([
         )
       }
     ]
-  }
+  },
+  {
+    path:'/admin',
+    element: (
+      <MustBeAdmin>
+        <Admin/>
+      </MustBeAdmin>
+    ),
+    children: [
+      {
+        path:'/admin/dashboard',
+        element: <Dashboard/>
+      },
+      {
+        path:'/admin/recipes',
+        element: <Recipes/>
+      }
+    ]
+  },
 ]);
 
 export default router;

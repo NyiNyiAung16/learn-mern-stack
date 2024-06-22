@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const recipesRoutes = require("./routes/Recipe");
 const userRoutes = require("./routes/User");
+const adminRoutes = require('./routes/admin');
 const commentRoutes = require("./routes/Comment");
 const AuthMiddleware = require("./middlewares/AuthMiddleware");
 const uploadController = require("./controllers/uploadController");
@@ -14,6 +15,7 @@ const multer = require("multer");
 const cron = require("node-cron");
 const sendEmail = require("./helpers/sendEmail");
 const path = require('path');
+const AdminMiddleware = require('./middlewares/adminMiddleware');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app = express();
@@ -68,6 +70,7 @@ app.get("/send-email", async (req, res) => {
 app.use("/api/recipes", AuthMiddleware, recipesRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/comments",AuthMiddleware,commentRoutes);
+app.use("/api/admin",AdminMiddleware,adminRoutes);
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     return res

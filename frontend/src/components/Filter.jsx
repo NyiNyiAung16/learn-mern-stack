@@ -11,7 +11,7 @@ function Filter({setFiler}) {
 
   return (
     <div className="flex items-center bg-gray-100">
-      <i className="fa-solid fa-search p-2 rounded"></i>
+      <i className="fa-solid fa-search p-2 rounded text-gray-600"></i>
       <input
         type="text"
         value={search}

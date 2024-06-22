@@ -1,5 +1,5 @@
 import axios from "../helpers/axios";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation} from "react-router-dom";
 import { AuthContext } from "../contexts/authContext";
 import { useContext, useState } from "react";
 import Filter from "./Filter";
@@ -8,6 +8,7 @@ function Navbar({setFiler}) {
   let navigate = useNavigate();
   let [showProfile, setShowProfile] = useState(false);
   let { user, dispatch } = useContext(AuthContext);
+  const location = useLocation();
 
   let logout = async () => {
     await axios.post("/api/users/logout");
@@ -20,9 +21,9 @@ function Navbar({setFiler}) {
     <div className="flex justify-between items-center p-5 bg-white">
       <h3 className="text-orange-500 font-bold text-2xl">Reciption</h3>
       <ul className="flex items-center gap-7">
-        <li>
+        {location.pathname === '/' && <li>
           <Filter setFiler={setFiler}/>
-        </li>
+        </li>}
         <li>
           <NavLink to="/" className="hover:text-orange-500 font-medium">
             Home
@@ -46,6 +47,14 @@ function Navbar({setFiler}) {
             Create Recipe
           </NavLink>
         </li>
+        {user?.isAdmin && <li>
+          <NavLink
+            to="/admin/dashboard"
+            className="hover:text-orange-500 font-medium"
+          >
+            Admin Dashboard
+          </NavLink>
+        </li>}
         {!user && (
           <>
             <li>

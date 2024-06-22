@@ -8,16 +8,10 @@ const recipesController = {
     index: async(req,res) => {
         let limit = 6;
         let page = parseInt(req.query.page) || 1;
-        let search = req.query.search || '';
          
         try{
             let recipes = await Recipe
-            .find({
-                $or: [
-                    {title: {$regex: search, $options: 'i'}},
-                    {"user.name":{$regex: search, $options: 'i'}}
-                ]
-            })
+            .find()
             .populate('user')
             .skip((page - 1) * limit) // 3 - 1 , 2 * 5
             .limit(limit)

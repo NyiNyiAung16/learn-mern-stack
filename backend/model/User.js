@@ -14,11 +14,12 @@ const UserSchema = new mongoose.Schema({
     photo_url: {
         type:String
     },
-    fav_recipes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Recipe'}],
     password: {
         type:String,
         required:true
-    }
+    },
+    fav_recipes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Recipe'}],
+    isAdmin: {type:Boolean, default: false}
 },{timestamps: true});
 
 UserSchema.index({ fav_recipes: 1 });
