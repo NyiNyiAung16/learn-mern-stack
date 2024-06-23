@@ -1,16 +1,11 @@
 import axios from "../helpers/axios";
 import { Link } from "react-router-dom";
-import DOMPurify from "dompurify";
 import { useContext, useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../contexts/authContext";
 
-function RecipeCard({ r, onDelete }) {
+function RecipeCard({ r, onDelete, showToast }) {
   let { user, dispatch } = useContext(AuthContext);
-
   let [isFavorite, setIsFavorite] = useState(false);
-  let cleanHTML = DOMPurify.sanitize(r.description);
 
   const config = {
     autoClose: 2000,
@@ -18,7 +13,7 @@ function RecipeCard({ r, onDelete }) {
   };
 
   useEffect(() => {
-    setIsFavorite(user.fav_recipes.includes(r._id));
+    setIsFavorite(user?.fav_recipes?.includes(r._id));
   }, [user, r]);
 
   let deleteRecipe = async () => {
@@ -30,18 +25,18 @@ function RecipeCard({ r, onDelete }) {
     }
   };
 
-  let addFavorite = async (recipeId) => {
+  const addFavoriteHandler = async (recipeId) => {
     try {
-      let res = await axios.post(
+      const response = await axios.post(
         `/api/users/${user._id}/favorites/${recipeId}`
       );
-      if (res) {
-        let userRes = await axios.get("/api/users/me");
-        dispatch({ type: "LOGIN", payload: userRes.data });
-        toast(res.data, config);
+      if (response.data) {
+        const updatedUser = await axios.get("/api/users/me");
+        dispatch({ type: "LOGIN", payload: updatedUser.data });
+        showToast(response.data,config);
       }
-    } catch (e) {
-      toast(e.message, { autoClose: 3000, type: "error" });
+    } catch (error) {
+      showToast(error.message,{ autoClose: 3000, type: "error" });
     }
   };
 
@@ -53,10 +48,10 @@ function RecipeCard({ r, onDelete }) {
       if (res) {
         let userRes = await axios.get("/api/users/me");
         dispatch({ type: "LOGIN", payload: userRes.data });
-        toast(res.data, config);
+        showToast(res.data,config);
       }
     } catch (e) {
-      toast(e.message, { autoClose: 3000, type: "error" });
+      showToast(e.message,{ autoClose: 3000, type: "error" });
     }
   };
 
@@ -73,11 +68,11 @@ function RecipeCard({ r, onDelete }) {
             {r.title}
           </h3>
         </Link>
-        <div className="space-x-3">
+        {user && <div className="space-x-3">
           {!isFavorite && (
             <i
               className="fa-regular fa-heart text-lg cursor-pointer"
-              onClick={() => addFavorite(r._id)}
+              onClick={() => addFavoriteHandler(r._id)}
             ></i>
           )}
           {isFavorite && (
@@ -98,17 +93,13 @@ function RecipeCard({ r, onDelete }) {
           >
             Delete
           </button>
-        </div>
+        </div>}
       </div>
       <div className="mt-2">
-        <div>
-          <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-        </div>
       </div>
       <p className="text-end">
         <span className="font-bold">Creator By</span> <span>{r.user.name}</span>
       </p>
-      <ToastContainer />
     </div>
   );
 }

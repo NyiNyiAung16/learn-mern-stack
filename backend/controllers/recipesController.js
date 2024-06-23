@@ -12,7 +12,10 @@ const recipesController = {
         try{
             let recipes = await Recipe
             .find()
-            .populate('user')
+            .populate({
+                path: 'user',
+                select: 'name'
+            })
             .skip((page - 1) * limit) // 3 - 1 , 2 * 5
             .limit(limit)
             .sort({createdAt: -1});
@@ -41,6 +44,21 @@ const recipesController = {
         }catch(e) {
             return res.status(500).json({error:'internet server error!'})
         }   
+    },
+    popular: async(req,res) => {
+        try{
+            let recipes = await Recipe
+            .find()
+            .populate({
+                path: 'user',
+                select: 'name'
+            })
+            .sort({createdAt: -1})
+            .limit(6);
+            return res.json(recipes);
+        }catch(e) {
+            return res.status(500).json({error:'internet server error!'})
+        }
     },
     show: async (req,res) => {
        try{

@@ -4,6 +4,7 @@ import { AuthContext } from "../contexts/authContext";
 import axios from '../helpers/axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const EmailAndName = () => {
     const { user, dispatch } = useContext(AuthContext);
@@ -11,27 +12,26 @@ const EmailAndName = () => {
     let [email,setEmail ] = useState(user?.email ?? '');
     let [loading,setLoading] = useState(false);
     let [errors,setErrors] = useState(null);
-    
-    let updateEmailAndName = async(e) => {
-        try{
-            e.preventDefault();
-            setLoading(true);
-            let res = await axios.patch('/api/users/emailAndName/update',{ email, name});
-            if(res) {
-                let userRes = await axios.get('/api/users/me');
-                dispatch({type: 'LOGIN', payload: userRes.data});
-                toast('Email & Name have successfully changed',{ autoClose: 2000, position: 'top-right'});
-            }
-            setLoading(false);
-        }catch(e) {
-            setErrors(e.response.data.errors);
+    let navigate = useNavigate();
+
+    const updateEmailAndName = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await axios.patch('/api/users/emailAndName/update', { email, name });
+            const userRes = await axios.get('/api/users/me');
+            dispatch({ type: 'LOGIN', payload: userRes.data });
+            toast('Email & Name have successfully changed', { autoClose: 2000, position: 'top-right' });
+            navigate('/user-profile');
+        } catch (e) {
+            console.error(e);
+        } finally {
             setLoading(false);
             setTimeout(() => {
                 setErrors(null);
             }, 2000);
-            console.log(e.response.data.errors)
         }
-    }
+    };
 
     return (
         <>

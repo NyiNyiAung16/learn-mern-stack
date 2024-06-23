@@ -1,34 +1,40 @@
 import { useContext, useState } from "react";
 import axios from '../helpers/axios'
 import { AuthContext } from '../contexts/authContext'
+import { useNavigate } from 'react-router-dom'
 
 const CommentForm = ({setIsFetch, recipe_id}) => {
-  let { user } = useContext(AuthContext);
+    let { user } = useContext(AuthContext);
     let [text,setText] = useState('');
     let [loading,setLoading] = useState(false);
     let [errors,setErrors] = useState(null);
+    let navigate = useNavigate();
     
     let submit = async(e) => {
-      try{
-        setLoading(true)
-        e.preventDefault();
-        let comment = {
-          text,
-          user: user._id,
-          recipe_id
+      e.preventDefault();
+      if(!user) {
+        navigate('/sign-in'); 
+      }else {
+        try{
+          setLoading(true)
+          let comment = {
+            text,
+            user: user._id,
+            recipe_id
+          }
+         let res = await axios.post('/api/comments',comment);
+         if(res) {
+          setLoading(false);
+          setIsFetch((prev) => !prev);
+          setText('');
+         }
+        }catch(e) {
+          setLoading(false);
+          setErrors(e.response.data.errors);
+          setTimeout(() => {
+            setErrors(null);
+          }, 2000);
         }
-       let res = await axios.post('/api/comments',comment);
-       if(res) {
-        setLoading(false);
-        setIsFetch((prev) => !prev);
-        setText('');
-       }
-      }catch(e) {
-        setLoading(false);
-        setErrors(e.response.data.errors);
-        setTimeout(() => {
-          setErrors(null);
-        }, 2000);
       }
     }
 

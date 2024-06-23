@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "../helpers/axios";
 import { Link, useParams } from "react-router-dom";
 import Comments from "../components/Comments";
 import CommentForm from "../components/CommentForm";
 import DOMPurify from "dompurify";
+import { AuthContext } from "../contexts/authContext";
 
 function RecipeDetail() {
   let [recipe, setRecipe] = useState(null);
@@ -11,6 +12,7 @@ function RecipeDetail() {
   let [loading, setLoading] = useState(false);
   let { id } = useParams();
   let [isFetch,setIsFetch] = useState(false);
+  let { user } = useContext(AuthContext);
 
   let cleanHTML = DOMPurify.sanitize(recipe?.description);
 
@@ -38,29 +40,25 @@ function RecipeDetail() {
   };
 
   return (
-    <>
+    <div className="mt-5">
       {loading && <span className="loading mx-auto"></span>}
       {error && <p>{error}</p>}
       {!!recipe && (
         <>
-          <div className="max-w-[1200px] mx-auto bg-white rounded flex gap-10">
+          <div className="max-w-[1000px] mx-auto bg-white rounded px-6 pb-4">
             <div>
               <img
                 src={`${import.meta.env.VITE_BACKEND_ACCESS_URL}/${
                   recipe.photo_url
                 }`}
                 alt="photo"
-                className="h-64 mx-auto object-contain rounded"
+                className="max-h-[300px] mx-auto object-contain rounded"
               />
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between mt-3">
-                <Link to={`/recipes`}>
-                  <h3 className="text-2xl font-bold text-orange-500">
-                    {recipe.title}
-                  </h3>
-                </Link>
-              </div>
+            </div>  
+            <div className="space-y-3 mt-5">
+              <h3 className="text-2xl font-bold text-orange-500">
+                {recipe.title}
+              </h3>
               <div className="mt-1">
                 <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />
               </div>
@@ -80,7 +78,7 @@ function RecipeDetail() {
               <p className="text-[#666]">
                 Published at - {new Date(recipe.createdAt).toLocaleString()}
               </p>
-              <div className="space-x-2 pb-3">
+              {user && <div className="space-x-2">
                 <Link
                   to={`/recipes/edit/${recipe._id}`}
                   className="text-sm text-white bg-yellow-500 py-1 px-2 rounded-md"
@@ -93,7 +91,7 @@ function RecipeDetail() {
                 >
                   Delete
                 </button>
-              </div>
+              </div>}
             </div>
           </div>
           <div className="text-center mt-4">
@@ -106,11 +104,11 @@ function RecipeDetail() {
           </div>
           <div className=" max-w-[800px] mx-auto rounded px-3 py-2 mt-5">
             <CommentForm setIsFetch={setIsFetch} recipe_id={recipe._id}/>
-            <Comments isFetch={isFetch} recipe_id={recipe._id}/>
+            {user && <Comments isFetch={isFetch} recipe_id={recipe._id}/>}
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
 

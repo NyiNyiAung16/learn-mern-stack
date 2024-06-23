@@ -1,51 +1,57 @@
 import axios from "../helpers/axios";
-import { useState,useContext } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useState,useContext, useEffect } from "react";
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/authContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function SignInForm() {
     let [email,setEmail] = useState('');
     let [password,setPassword] = useState('');
     let [errors,setErrors] = useState(null);
     let [loading,setLoading] = useState(false);
+    let loaction = useLocation();
 
+    useEffect(() => {
+        if(loaction.state) {
+            toast(loaction.state.message, {autoClose: 2000, position: 'top-right'});
+        }
+    },[loaction.state]);
 
     let {dispatch} = useContext(AuthContext);
     let navigate = useNavigate();
 
-    let login  = async (e) => {
+    const login = async (e) => {
+        e.preventDefault();
         setLoading(true);
-        try{
-            e.preventDefault();
-            let user = {
-                email,
-                password
-            };
 
-            let res = await axios.post('/api/users/login',user);
-            if(res.status === 200) {
-                navigate('/');
+        try {
+            const user = { email, password };
+            const res = await axios.post('/api/users/login', user);
+
+            if (res.status === 200) {
+                navigate('/', { state: { message: res.data.message } });
             }
-            dispatch({ type: 'LOGIN', payload: res.data.user})
-            setLoading(false);
+
+            dispatch({ type: 'LOGIN', payload: res.data.user });
+        } catch (error) {
+            setErrors(error.response.data.errors || { password: { msg: error.response.data.error } });
+        } finally {
             setEmail('');
             setPassword('');
-        }catch(e) {
-            if(e.response.data.error){
-                setErrors({password: {msg:e.response.data.error}});   
-            }else{
-                setErrors(e.response.data.errors);
-            }
             setLoading(false);
+
             setTimeout(() => {
                 setErrors(null);
             }, 2000);
         }
+    };
 
-    }
+    
     return (
-        <div className="w-full max-w-md mx-auto">
+        <div className="w-full max-w-md mx-auto mt-4">
             <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={login}>
             <h3 className="text-2xl text-center font-bold text-orange-600 mb-2">Login Here?</h3>
                 <div className="mb-4">
@@ -87,6 +93,7 @@ function SignInForm() {
                     </Link>
                 </div>
             </form>
+            <ToastContainer/>
         </div>
     )
 }

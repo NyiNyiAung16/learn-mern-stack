@@ -8,6 +8,7 @@ const FavoriteRecipes = () => {
     let [favRecipes,setFavRecipes] = useState(null);
     let [loading,setLoading ] = useState(false);
     let [error,setError ] = useState(null);
+    console.log(favRecipes)
 
     useEffect(() => {
         const fetch = async () => {

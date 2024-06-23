@@ -1,8 +1,9 @@
 import axios from "../helpers/axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import getPhotoURL from "../helpers/getPhotoURL";
 import getPreviewURL from "../helpers/getPreviewURL";
+import { AuthContext } from "../contexts/authContext";
 
 function SignUpForm() {
   let [name, setName] = useState("");
@@ -12,34 +13,27 @@ function SignUpForm() {
   let [loading, setLoading] = useState(false);
   let [file,setFile] = useState(null);
   let [preview,setPreview] = useState('');
+  let { dispatch } = useContext(AuthContext);
 
   let navigate = useNavigate();
 
-  let register = async (e) => {
+  const register = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    try {
-      e.preventDefault();
-      let photo_url;
-      if(file) {
-        photo_url = await getPhotoURL(file,setErrors);
-      }else {
-        photo_url = 'default.jpg'
-      }
-      let user = {
-        name,
-        email,
-        password,
-        photo_url
-      };
 
-      let res = await axios.post("/api/users/register", user);
-      if (res.status == 200) {
-        setLoading(false);
-        navigate('/');
+    try {
+      const user = { name, email, password, photo_url: file ? await getPhotoURL(file, setErrors) : 'default.jpg' };
+      const res = await axios.post("/api/users/register", user);
+
+      if (res.status === 200) {
+        navigate('/', { state: { message: res.data.message } });
       }
+
+      dispatch({ type: "LOGIN", payload: res.data.user });
     } catch (e) {
-      setLoading(false);
       setErrors(e.response.data.errors);
+    } finally {
+      setLoading(false);
       setTimeout(() => {
         setErrors(null);
       }, 2000);
@@ -47,7 +41,7 @@ function SignUpForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto mt-4">
       <form
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         onSubmit={register}

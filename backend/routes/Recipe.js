@@ -4,8 +4,10 @@ const handleMiddleware = require('../middlewares/handleMiddleware')
 const router = express.Router();
 const { body } = require('express-validator');
 const { default: mongoose } = require('mongoose');
+const AuthMiddleware = require('../middlewares/AuthMiddleware');
 
 router.get('',recipesController.index);
+router.get('/popular',recipesController.popular);
 router.post('',[
     body('title').notEmpty().withMessage('Title is required'),
     body('description').notEmpty().withMessage('Description is required'),
@@ -17,10 +19,10 @@ router.post('',[
         }
         return true;
     })
-],handleMiddleware,recipesController.store);
+],handleMiddleware,AuthMiddleware,recipesController.store);
 router.get('/:id',recipesController.show);
-router.patch('/:id',recipesController.update);
-router.delete('/:id',recipesController.destroy);
+router.patch('/:id',AuthMiddleware,recipesController.update);
+router.delete('/:id',AuthMiddleware,recipesController.destroy);
 
 
 module.exports = router;

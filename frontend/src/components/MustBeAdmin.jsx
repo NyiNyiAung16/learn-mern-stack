@@ -5,8 +5,10 @@ import { AuthContext } from '../contexts/authContext';
 const MustBeAdmin = ({ children }) => {
     let { user } = useContext(AuthContext);
     const location = useLocation();
-
-    if (!user?.isAdmin) {
+    
+    if (!user) {
+        return <Navigate to="/sign-in" state={{ from: location }} />;
+    }else if (!user?.isAdmin) {
         return <Navigate to="/" state={{ from: location }} />;
     }
 

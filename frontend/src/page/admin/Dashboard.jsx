@@ -26,22 +26,17 @@ function Dashboard() {
     fetch();
   }, []);
 
-  let deleteUser = async (id) => {
+  const deleteUser = async (userId) => {
     try {
-      let res = await axios.delete(`/api/admin/user/${id}`);
-      if (res) {
-        let deletedUser = res.data.user;
-        setUsers((prevUsers) =>
-          prevUsers.filter((user) => user._id !== deletedUser._id)
-        );
-        toast(res.data.message, {
-          autoClose: 2000,
-          position: "top-right",
-          type: "success",
-        });
-      }
-    } catch (e) {
-      toast(e.response.data.error, {
+      const response = await axios.delete(`/api/admin/user/${userId}`);
+      setUsers((users) => users.filter((user) => user._id !== userId));
+      toast(response.data.message, {
+        autoClose: 2000,
+        position: "top-right",
+        type: "success",
+      });
+    } catch (error) {
+      toast(error.response.data.error, {
         autoClose: 2000,
         position: "top-right",
         type: "error",

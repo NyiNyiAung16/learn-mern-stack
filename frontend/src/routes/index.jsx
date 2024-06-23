@@ -2,7 +2,6 @@ import App from '../App';
 import { createBrowserRouter } from 'react-router-dom'
 import Home from '../page/Home';
 import About from '../page/About';
-import Contact from '../page/Contact';
 import RecipeForm from '../page/RecipeForm';
 import SignUpForm from '../page/SignUpForm';
 import SignInForm from '../page/SignInForm';
@@ -18,6 +17,7 @@ import ErrorPage from '../error/errorPage';
 import MustBeAdmin from '../components/MustBeAdmin';
 import Dashboard from '../page/admin/Dashboard';
 import Recipes from '../page/admin/Recipes';
+import AllRecipes from '../page/Recipes';
 import Admin from '../page/Admin';
 
 let router = createBrowserRouter([
@@ -28,27 +28,31 @@ let router = createBrowserRouter([
     children:[
       {
         path:'',
-        element:(
-          <RequireAuth>
-            <Home/>
-          </RequireAuth>
-        )
+        element:<Home/>
       },
       {
         path:'/about',
         element:<About/>
       },
       {
-        path:'/contact',
-        element:<Contact/>
+        path:'/recipes',
+        element:<AllRecipes/>
       },
       {
-        path:'/recipes/create',
-        element: <RecipeForm/>
+        path:'/recipe/create',
+        element: (
+          <RequireAuth>
+            <RecipeForm/>
+          </RequireAuth>
+        )
       },
       {
         path:'/recipes/edit/:id',
-        element: <RecipeForm/>
+        element: (
+          <RequireAuth>
+            <RecipeForm/>
+          </RequireAuth>
+        )
       },
       {
         path:'/recipes/:id',
@@ -56,23 +60,43 @@ let router = createBrowserRouter([
       },
       {
         path:'/user/favoriteRecipes',
-        element: <FavoriteRecipes/>
+        element: (
+          <RequireAuth>
+            <FavoriteRecipes/>
+          </RequireAuth>
+      )
       },
       {
         path:'/user-profile',
-        element: <UserProfile/>
+        element: (
+        <RequireAuth>
+          <UserProfile/>
+        </RequireAuth>
+        )
       },
       {
         path:'/user-profilePicture',
-        element: <ProfilePicture/>
+        element: (
+          <RequireAuth>
+            <ProfilePicture/>
+          </RequireAuth>
+      )
       },
       {
         path:'/user-email&name',
-        element: <EmailAndName/>
+        element: (
+          <RequireAuth>
+            <EmailAndName/>
+          </RequireAuth>
+      )
       },
       {
         path:'/user-password',
-        element: <UpdatePassword/>
+        element: (
+          <RequireAuth>
+            <UpdatePassword/>
+          </RequireAuth>
+      )
       },
       {
         path: '/sign-up',

@@ -1,62 +1,73 @@
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
-import useFetch from "../hooks/useFetch";
-import Pagination from "../components/Pagination";
 import RecipeCard from "../components/RecipeCard";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Banner from "../components/Banner";
+import axios from "../helpers/axios";
+import Contact from '../components/Contact'
+import { useLocation } from "react-router-dom";
 
 function Home() {
-  let location = useLocation();
-  let navigate = useNavigate();
-  let searchQuery = new URLSearchParams(location.search);
-  let page = parseInt(searchQuery.get("page")) || 1;
-  const filter = useOutletContext();
+  let [error,setError] = useState(null);
+  let [loading,setLoading] = useState(false);
+  let [PopularRecipes,setPopularRecipes] = useState(null);
+  let loaction = useLocation();
   
-  let {
-    data: recipes,
-    error,
-    loading,
-    links,
-    setData: setRecipes,
-  } = useFetch(`/api/recipes?page=${page}`);
-  
-  let [filteredRecipes,setFilteredRecipes] = useState(null);
-
   useEffect(() => {
-    setFilteredRecipes(recipes);
-    if (filter) {
-      setFilteredRecipes(
-        recipes.filter(
-          (recipe) =>
-            recipe.title.toLowerCase().includes(filter.toLowerCase()) ||
-            recipe.user.name.toLowerCase().includes(filter.toLowerCase())
-        )
-      );
+    let state = loaction.state || {};
+    let fetch = async () => {
+      try {
+        setLoading(true);
+        let response = await axios.get('/api/recipes/popular');
+        setPopularRecipes(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+    fetch();
+    if(state?.message) {
+      toast(state.message, {autoClose: 2000, position: 'top-right'});
     }
-  }, [filter,setRecipes,recipes]);
+  },[loaction.state]);
+
+
+  let showToast = (text,config) => {
+    toast(text, config);
+  }
 
   let onDelete = (_id) => {
-    if (recipes.length === 1 && page > 1) {
-      navigate(`/?page=${page - 1}`);
-    } else {
-      setRecipes((prev) => prev.filter((r) => r._id !== _id));
-    }
+    setPopularRecipes((prev) => prev.filter((r) => r._id !== _id));
   };
 
   return (
     <>
+    <div className="mb-12">
+      <Banner/>
+    </div>
+    <div className="mb-7">
       {error && <p>{error}</p>}
       {loading && <span className="loading mx-auto"></span>}
-      <div className="grid grid-cols-3 gap-2 mb-3">
-        {filteredRecipes?.length > 0 &&
-          filteredRecipes.map((r) => (
-            <RecipeCard 
-                r={r} 
-                key={r._id} 
-                onDelete={onDelete} 
-            />
-          ))}
+      <div className="px-5">
+        <h1 className="text-2xl font-bold mb-3 underline text-gray-600">Popular Recipes</h1>
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          {PopularRecipes?.length > 0 &&
+            PopularRecipes.map((r) => (
+              <RecipeCard 
+                  r={r} 
+                  key={r._id}  
+                  showToast={showToast}
+                  onDelete={onDelete}
+              />
+            ))}
+        </div>
       </div>
-      {!!links && <Pagination page={page} links={links} />}
+      <ToastContainer/>
+    </div>
+    <div>
+      <Contact/>
+    </div>
     </>
   );
 }

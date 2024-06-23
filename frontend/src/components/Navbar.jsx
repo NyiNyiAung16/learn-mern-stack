@@ -14,14 +14,14 @@ function Navbar({setFiler}) {
     await axios.post("/api/users/logout");
     dispatch({ type: "LOGOUT" });
     setShowProfile(false);
-    navigate("/sign-in");
+    navigate("/sign-in",{ state: { message: "Logged out successfully" } });
   };
 
   return (
     <div className="flex justify-between items-center p-5 bg-white">
-      <h3 className="text-orange-500 font-bold text-2xl">Reciption</h3>
+      <h3 className="text-orange-500 font-bold text-2xl">{import.meta.env.VITE_APP_NAME}</h3>
       <ul className="flex items-center gap-7">
-        {location.pathname === '/' && <li>
+        {location.pathname === '/recipes' && <li>
           <Filter setFiler={setFiler}/>
         </li>}
         <li>
@@ -33,20 +33,23 @@ function Navbar({setFiler}) {
           <NavLink to="/about" className="hover:text-orange-500 font-medium">
             About
           </NavLink>
-        </li>
-        <li>
-          <NavLink to="/contact" className="hover:text-orange-500 font-medium">
-            Contact
-          </NavLink>
-        </li>
+        </li> 
         <li>
           <NavLink
-            to="/recipes/create"
+            to="/recipes"
+            className="hover:text-orange-500 font-medium"
+          >
+            Recipes
+          </NavLink>
+        </li>
+       {user && <li>
+          <NavLink
+            to="/recipe/create"
             className="hover:text-orange-500 font-medium"
           >
             Create Recipe
           </NavLink>
-        </li>
+        </li>}
         {user?.isAdmin && <li>
           <NavLink
             to="/admin/dashboard"
@@ -55,28 +58,8 @@ function Navbar({setFiler}) {
             Admin Dashboard
           </NavLink>
         </li>}
-        {!user && (
-          <>
-            <li>
-              <NavLink
-                to="/sign-in"
-                className="hover:text-orange-500 font-medium"
-              >
-                Login
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/sign-up"
-                className="hover:text-orange-500 font-medium"
-              >
-                Register
-              </NavLink>
-            </li>
-          </>
-        )}
         {user && (
-          <div className="relative">
+          <div className="relative z-10">
             <img
               src={`${
                 import.meta.env.VITE_BACKEND_ACCESS_URL

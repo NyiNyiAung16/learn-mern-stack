@@ -17,7 +17,7 @@ const userController = {
         maxAge: 3 * 24 * 60 * 60 * 1000,
       }); //maxAge - seconds
       user.password = null;
-      return res.json({ user, token });
+      return res.json({ user, token, message: `Welcome Back ${user.name}` });
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -32,7 +32,7 @@ const userController = {
         maxAge: 3 * 24 * 60 * 60 * 1000,
       }); //maxAge - seconds
       user.password = null;
-      return res.json({ user, token });
+      return res.json({ user, token, message: `Welcome ${user.name} from ${process.env.APP_NAME}` });
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -97,7 +97,10 @@ const userController = {
   getFavRecipes: async (req, res) => {
     try {
       let user = await User.findById(req.params.userId)
-        .populate("fav_recipes")
+        .populate({
+          path: "fav_recipes",
+          populate: { path: "user", select: "name" },
+        })
         .exec();
       return res.status(200).json(user.fav_recipes);
     } catch (e) {

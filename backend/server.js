@@ -46,28 +46,7 @@ mongoose.connect(process.env.MONGODB_URL).then(() => {
 
 //file upload api
 app.post("/api/upload", uploadValidation, handleMiddleware, uploadController);
-//email api
-app.get("/send-email", async (req, res) => {
-  try {
-    await sendEmail({
-      view: "test",
-      data: {
-        name: "test",
-      },
-      from: "test@gmail.com",
-      to: "mgmg@gmail.com",
-      subject: "testing for email in node",
-    });
-    return res.send("email is already sent!");
-  } catch (e) {
-    return res.status(500).json({
-      message: e.message,
-      status: 500,
-    });
-  }
-});
-
-app.use("/api/recipes", AuthMiddleware, recipesRoutes);
+app.use("/api/recipes", recipesRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/comments",AuthMiddleware,commentRoutes);
 app.use("/api/admin",AdminMiddleware,adminRoutes);
