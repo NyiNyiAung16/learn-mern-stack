@@ -46,7 +46,7 @@ function Home() {
     <div className="mb-12">
       <Banner/>
     </div>
-    <div className="mb-7">
+    <div>
       {error && <p>{error}</p>}
       {loading && <span className="loading mx-auto"></span>}
       <div className="px-5">

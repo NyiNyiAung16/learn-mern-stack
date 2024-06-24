@@ -2,6 +2,7 @@ import axios from "../helpers/axios";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/authContext";
+import { addFavoriteHandler, removeFavoriteHandler } from "../helpers/favoriteHandler";
 
 function RecipeCard({ r, onDelete, showToast }) {
   let { user, dispatch } = useContext(AuthContext);
@@ -25,34 +26,12 @@ function RecipeCard({ r, onDelete, showToast }) {
     }
   };
 
-  const addFavoriteHandler = async (recipeId) => {
-    try {
-      const response = await axios.post(
-        `/api/users/${user._id}/favorites/${recipeId}`
-      );
-      if (response.data) {
-        const updatedUser = await axios.get("/api/users/me");
-        dispatch({ type: "LOGIN", payload: updatedUser.data });
-        showToast(response.data,config);
-      }
-    } catch (error) {
-      showToast(error.message,{ autoClose: 3000, type: "error" });
-    }
+  const addFavorite = async (recipeId) => {
+    await addFavoriteHandler(recipeId, user, dispatch, showToast, config);
   };
 
   let removeFavorite = async (recipeId) => {
-    try {
-      let res = await axios.delete(
-        `/api/users/${user._id}/favorites/${recipeId}`
-      );
-      if (res) {
-        let userRes = await axios.get("/api/users/me");
-        dispatch({ type: "LOGIN", payload: userRes.data });
-        showToast(res.data,config);
-      }
-    } catch (e) {
-      showToast(e.message,{ autoClose: 3000, type: "error" });
-    }
+    await removeFavoriteHandler(recipeId, user, dispatch, showToast, config);
   };
 
   return (
@@ -72,7 +51,7 @@ function RecipeCard({ r, onDelete, showToast }) {
           {!isFavorite && (
             <i
               className="fa-regular fa-heart text-lg cursor-pointer"
-              onClick={() => addFavoriteHandler(r._id)}
+              onClick={() => addFavorite(r._id)}
             ></i>
           )}
           {isFavorite && (

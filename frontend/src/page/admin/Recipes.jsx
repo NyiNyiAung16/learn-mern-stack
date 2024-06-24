@@ -1,10 +1,10 @@
 import Table from "../../components/Table";
 import { useEffect, useState } from "react";
 import axios from "../../helpers/axios";
-import DOMPurify from "dompurify";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FilteredBy from "../../components/FilteredBy";
+import { Link } from 'react-router-dom'
 function Recipes() {
   let [recipes, setRecipes] = useState(null);
   let [filteredRecipes, setFilteredRecipes] = useState(null);
@@ -31,7 +31,7 @@ function Recipes() {
       let res = await axios.delete(`/api/admin/recipes/${id}`);
       if (res.status === 200) {
         let deletedRecipe = res.data.recipe;
-        setRecipes((prevRecipes) =>
+        setFilteredRecipes((prevRecipes) =>
           prevRecipes.filter((recipe) => recipe._id !== deletedRecipe._id)
         );
         toast(res.data.message, {
@@ -94,10 +94,7 @@ function Recipes() {
               <th scope="col" className="px-6 py-4 font-medium text-gray-900">
                 Title
               </th>
-              <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-                Description
-              </th>
-              <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+              <th scope="col" className="px-6 py-4 font-medium text-gray-900 text-center">
                 Ingredients
               </th>
               <th scope="col" className="px-6 py-4 font-medium text-gray-900">
@@ -105,6 +102,9 @@ function Recipes() {
               </th>
               <th scope="col" className="px-6 py-4 font-medium text-gray-900">
                 CreatedAt
+              </th>
+              <th scope="col" className="px-6 py-4 font-medium text-gray-900 text-center">
+                Popular
               </th>
               <th
                 scope="col"
@@ -128,36 +128,34 @@ function Recipes() {
                     </div>
                   </td>
                   <th className="px-6 py-4 font-normal text-gray-900">
-                    <div className="font-medium text-gray-700">
-                      {recipe.title}
-                    </div>
+                    <Link to={`/recipes/${recipe._id}`}>
+                      <h3 className="text-lg text-gray-700  hover:underline">
+                        {recipe.title}
+                      </h3>
+                    </Link>
                   </th>
                   <td className="px-6 py-4">
-                    <div className="text-gray-700">
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(recipe.description),
-                        }}
-                      />
+                    <div className="flex justify-center items-center gap-2">
+                      {recipe.ingredients?.length > 0 &&
+                        recipe.ingredients.map((ingredient, i) => (
+                          <span
+                            className="bg-orange-400 text-white text-center rounded-lg px-2 py-1 text-sm"
+                            key={i}
+                          >
+                            {" "}
+                            {ingredient}{" "}
+                          </span>
+                        ))}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 flex items-center gap-2">
-                    {recipe.ingredients?.length > 0 &&
-                      recipe.ingredients.map((ingredient, i) => (
-                        <span
-                          className="bg-orange-400 text-white text-center rounded-lg px-2 py-1 text-sm"
-                          key={i}
-                        >
-                          {" "}
-                          {ingredient}{" "}
-                        </span>
-                      ))}
                   </td>
                   <td className="px-6 py-4">
                     <p>{recipe.user.name}</p>
                   </td>
                   <td className="px-6 py-4">
                     <p>{new Date(recipe.createdAt).toLocaleDateString()}</p>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <p>{recipe.popular}</p>
                   </td>
                   <td className="px-6 py-4">
                     <i

@@ -29,7 +29,7 @@ function Dashboard() {
   const deleteUser = async (userId) => {
     try {
       const response = await axios.delete(`/api/admin/user/${userId}`);
-      setUsers((users) => users.filter((user) => user._id !== userId));
+      setFilteredUsers((users) => users.filter((user) => user._id !== userId));
       toast(response.data.message, {
         autoClose: 2000,
         position: "top-right",

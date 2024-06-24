@@ -18,7 +18,7 @@ function Navbar({setFiler}) {
   };
 
   return (
-    <div className="flex justify-between items-center p-5 bg-white">
+    <div className="flex justify-between items-center p-5 bg-white select-none">
       <h3 className="text-orange-500 font-bold text-2xl">{import.meta.env.VITE_APP_NAME}</h3>
       <ul className="flex items-center gap-7">
         {location.pathname === '/recipes' && <li>

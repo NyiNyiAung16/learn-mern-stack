@@ -26,7 +26,7 @@ const adminController = {
           { title: { $regex: recipeSearch, $options: "i" } },
           { "user.name": { $regex: recipeSearch, $options: "i" } },
         ],
-      }) .populate('user').sort({ createdAt: -1 });
+      }) .populate({path:'user',select: 'name'}).sort({ createdAt: -1 });
 
       return res.status(200).json(recipes);
     } catch (e) {

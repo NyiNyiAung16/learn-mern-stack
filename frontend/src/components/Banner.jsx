@@ -12,11 +12,18 @@ function Banner() {
                 <div className="col-span-5">
                     <h1 className="text-4xl font-bold text-slate-600 text-center mb-1">Welcome to RecipeBook</h1>
                     <p className="mb-4 text-xl font-medium text-gray-500 text-center">The best place to find and share your favorite recipes</p>
-                    <p className="mb-5">Create an account or log in to start exploring. You can browse through a wide variety of recipes, add your own recipes, and share them with your friends.</p>
-                    {!user && <div className="flex justify-center space-x-3">
-                        <Link to="/sign-in" className="px-5 py-2 rounded border-none bg-orange-500 text-white hover:bg-orange-600 transition-all">Log In</Link>
-                        <Link to="/sign-up" className="px-5 py-2 rounded border-none bg-orange-500 text-white hover:bg-orange-600 transition-all">Sign Up</Link>
-                    </div>}
+                    {user && (
+                        <p>You can browse through a wide variety of recipes, add your own recipes, and share them with your friends.</p>
+                    )}
+                    {!user && (
+                        <>
+                            <p className="mb-5">Create an account or log in to start exploring. You can browse through a wide variety of recipes, add your own recipes, and share them with your friends.</p>
+                            <div className="flex justify-center space-x-3">
+                                <Link to="/sign-in" className="px-5 py-2 rounded border-none bg-orange-500 text-white hover:bg-orange-600 transition-all">Log In</Link>
+                                <Link to="/sign-up" className="px-5 py-2 rounded border-none bg-orange-500 text-white hover:bg-orange-600 transition-all">Sign Up</Link>
+                            </div>
+                        </>
+                    )}
                 </div>
                 <div className="col-span-7">
                     <div className="relative h-[300px] md:h-[400px]">

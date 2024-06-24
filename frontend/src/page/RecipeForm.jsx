@@ -91,7 +91,7 @@ function RecipeForm() {
 
   return (
     <form
-      className="max-w-xl mx-auto border-white border-2 rounded p-3 space-y-4 mt-5"
+      className="max-w-xl mx-auto border-white border-2 rounded p-3 space-y-4"
       onSubmit={submit}
     >
       <h2 className="text-center text-2xl text-orange-500 font-bold">

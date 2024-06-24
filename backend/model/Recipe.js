@@ -17,6 +17,10 @@ const RecipeSchema = new mongoose.Schema({
         type:Array,
         required:true
     },
+    popular: {
+        type:Number,
+        default:0
+    },
     user:{
         type:  mongoose.Schema.Types.ObjectId,
         ref : 'User'

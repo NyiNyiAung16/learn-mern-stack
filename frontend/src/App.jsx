@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <Navbar setFiler={setFiler}/>
-      <div>
+      <div className='pt-5'>
         <Outlet context={filter}/>
       </div>
     </>

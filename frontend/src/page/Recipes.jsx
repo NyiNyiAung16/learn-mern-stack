@@ -49,7 +49,7 @@ function Recipes() {
   }
 
   return (
-    <div className="mt-7">
+    <div>
       {error && <p>{error}</p>}
       {loading && <span className="loading mx-auto"></span>}
       <div className="grid grid-cols-3 gap-2 mb-3">

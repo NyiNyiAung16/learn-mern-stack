@@ -8,7 +8,6 @@ const FavoriteRecipes = () => {
     let [favRecipes,setFavRecipes] = useState(null);
     let [loading,setLoading ] = useState(false);
     let [error,setError ] = useState(null);
-    console.log(favRecipes)
 
     useEffect(() => {
         const fetch = async () => {
@@ -35,7 +34,7 @@ const FavoriteRecipes = () => {
                 { favRecipes?.length > 0 && favRecipes.map((recipe) => (
                     <RecipeCard r={recipe} key={recipe._id}/>
                 ))}
-                {favRecipes?.length <= 0 && <p>You do not have any favorite recipes!</p>}
+                {favRecipes?.length <= 0 && <p className="px-4">You do not have any favorite recipes!</p>}
             </div>
         </>
     )

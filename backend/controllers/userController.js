@@ -2,6 +2,7 @@ const User = require("../model/User");
 const createToken = require("../helpers/createToken");
 const bcrypt = require("bcrypt");
 const fileUnlink = require("../helpers/fileUnlink");
+const Recipe = require("../model/Recipe");
 
 const userController = {
   me: (req, res) => {
@@ -78,6 +79,7 @@ const userController = {
         { _id: req.params.userId },
         { $addToSet: { fav_recipes: req.params.recipeId } }
       ); // $addToSet prevents duplicates
+      await Recipe.findByIdAndUpdate(req.params.recipeId, { $inc: { popular : 1}});
       return res.status(200).send('Add Favorite is successful');
     } catch (e) {
       return res.status(500).json(e);
@@ -89,6 +91,7 @@ const userController = {
         { _id: req.params.userId },
         { $pull: { fav_recipes: req.params.recipeId } }
       );
+      await Recipe.findByIdAndUpdate(req.params.recipeId, { $inc: { popular : -1}});
       return res.status(200).send('Remove Favorite is successful');
     } catch (e) {
       return res.status(500).json(e);
